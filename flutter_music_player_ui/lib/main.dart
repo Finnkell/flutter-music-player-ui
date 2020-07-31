@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Music Player UI',
       theme: ThemeData(
+        brightness: Brightness.light,
         primarySwatch: Colors.purple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
@@ -30,6 +32,10 @@ class MusicPlayer extends StatefulWidget {
 }
 
 class _MusicPlayerState extends State<MusicPlayer> {
+  bool isPress = false;
+  bool isPressPlaylist = false;
+  bool isPressLoop = false;
+  double value = 30;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +46,24 @@ class _MusicPlayerState extends State<MusicPlayer> {
           child: Column(
             children: <Widget>[
               SizedBox(
-                height: 100,
+                height: 50,
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    IconButton(
+                      iconSize: 40,
+                      onPressed: () {},
+                      icon: Icon(Icons.chevron_left),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.more_vert), 
+                    ),
+                  ],
+                ),
               ),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
@@ -64,51 +87,79 @@ class _MusicPlayerState extends State<MusicPlayer> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image(
-                    image: NetworkImage("https://images.pexels.com/photos/2170387/pexels-photo-2170387.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"),
-                    width: MediaQuery.of(context).size.width*0.7,
-                    height: MediaQuery.of(context).size.width*0.7,
+                    image: NetworkImage(
+                        "https://images.pexels.com/photos/2170387/pexels-photo-2170387.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"),
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    height: MediaQuery.of(context).size.width * 0.7,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               Text(
-                "Albuns title",
+                "Album title",
                 style: TextStyle(
                   fontSize: 20,
                 ),
               ),
               Text("Singer Name, Label"),
-              SizedBox(height: 20),
+              SizedBox(height: 50),
               Slider(
-                value: 10,
-                onChanged: (v) {},
+                value: value,
+                onChanged: (v) {
+                  setState(() {
+                    value = v;
+                  });
+                },
                 max: 100,
                 min: 0,
                 activeColor: Color(0xFF5E3581),
               ),
-              SizedBox(height: 60),
+              SizedBox(height: 50),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.repeat),
+                    color: isPressLoop ? Colors.deepPurpleAccent : Colors.black,
+                    iconSize: 35,
+                    onPressed: () {
+                      setState(() {
+                        isPressLoop = !isPressLoop;
+                      });
+                    },
+                    icon: isPressLoop ? Icon(Icons.repeat_one) : Icon(Icons.repeat) ,
                   ),
                   IconButton(
+                    iconSize: 35,
                     onPressed: () {},
                     icon: Icon(Icons.skip_previous),
                   ),
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.play_arrow),
+                    color: Color(0xFF5E3581),
                     iconSize: 80,
+                    onPressed: () {
+                      setState(() {
+                        isPress = !isPress;
+                      });
+                    },
+                    icon: this.isPress
+                        ? Icon(Icons.play_circle_outline)
+                        : Icon(Icons.pause_circle_outline),
                   ),
                   IconButton(
+                    iconSize: 35,
                     onPressed: () {},
                     icon: Icon(Icons.skip_next),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    color: this.isPressPlaylist
+                        ? Colors.deepPurpleAccent
+                        : Colors.black,
+                    iconSize: 35,
+                    onPressed: () {
+                      setState(() {
+                        isPressPlaylist = !isPressPlaylist;
+                      });
+                    },
                     icon: Icon(Icons.playlist_play),
                   ),
                 ],
